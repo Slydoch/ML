@@ -1,0 +1,79 @@
+FROM ubuntu:16.04
+ARG root
+
+ENV DEBIAN_FRONTEND noninteractive
+
+###########################################
+# PHP 7
+###########################################
+
+RUN apt-get update -yq \
+    && apt-get upgrade -yq \
+    && apt-get install -yq \
+        apache2 \
+        php \
+        zip \
+        unzip \
+        libapache2-mod-php \
+        php-mbstring \
+        php-mcrypt \
+        php-xml \
+        php-curl \
+        php-dev \
+        php-gd \
+        php-xdebug \
+        php-mysql \
+        php-zip \
+        php-soap \
+        php-pear \
+        libyaml-dev \
+        ssh \
+    && echo "xdebug.remote_enable=on" >> /etc/php/7.0/apache2/conf.d/20-xdebug.ini
+
+###########################################
+# PECL
+###########################################
+
+RUN pecl install yaml
+
+
+###########################################
+# Node
+###########################################
+
+RUN apt-get install -yq \
+        curl \
+        git \
+        nano \
+        sudo \
+    && curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash - \
+    && apt-get install -yq \
+        nodejs \
+    && npm install -g npm
+
+###########################################
+# Application
+###########################################
+
+COPY ./docker/apache/etc /etc
+COPY ./docker/apache/entrypoint.sh /entrypoint.sh
+COPY . $root
+RUN chmod 777 /entrypoint.sh
+
+# Manually set up the apache environment variables
+ENV APACHE_RUN_USER www-data
+ENV APACHE_RUN_GROUP www-data
+ENV APACHE_LOG_DIR /var/log/apache2
+ENV APACHE_LOCK_DIR /var/lock/apache2
+ENV APACHE_PID_FILE /var/run/apache2.pid
+
+# Setting a ENV var that will appear in PHP's $_SERVER and allow us to know if we're in DOCKER or not.
+# Useful for CLI scripts that can be run from outside or inside the container.
+ENV IN_DOCKER 1
+
+ENV ROOT $root
+
+WORKDIR /root
+
+EXPOSE 80
+ENTRYPOINT ["sh", "/entrypoint.sh"]

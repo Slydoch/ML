@@ -1,0 +1,22 @@
+version: "2"
+services:
+
+  apache:
+    restart: always
+    network_mode: "bridge"
+    volumes:
+      - .:${ROOT}
+      - ./docker/apache/etc/php.ini:/etc/php.ini
+      - ./docker/apache/etc/apache2/conf-enabled:/etc/apache2/conf-enabled
+      - ./docker/apache/etc/apache2/mods-enabled:/etc/apache2/mods-enabled
+      - ./docker/apache/etc/apache2/sites-enabled:/etc/apache2/sites-enabled
+      - ./docker/apache/entrypoint.sh:/entrypoint.sh
+    env_file:
+      - .env
+
+  mysql:
+    restart: always
+    network_mode: "bridge"
+    volumes:
+      - ./docker/mysql/conf.d:/etc/mysql/conf.d
+      - ./docker/mysql/data:/var/lib/mysql

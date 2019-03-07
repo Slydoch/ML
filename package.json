@@ -1,0 +1,7 @@
+{
+  "name": "ml",
+  "version": "1.0.0",
+  "dependencies": {
+    "jquery": "^3.3.1"
+  }
+}
