@@ -9,8 +9,8 @@
             this.to = settings.to || false;
             if (!this.to)
                 throw 'Missing to';
-            this.force = settings.force || 0.5;
-            this.value = settings.value || 0.5;
+            this.force = settings.force || 0.5 + (Math.random() / 0.1 - Math.random() / 0.2);
+            this.value = settings.value || 0.5 + (Math.random() / 0.1 - Math.random() / 0.2);
         }
 
         activate() {

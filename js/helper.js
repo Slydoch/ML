@@ -17,10 +17,10 @@ function minMaxArr(arr) {
     return {min: min, max: max};
 }
 
-function nomrArray(arr, min, max) {
+function normArray(arr, min, max) {
     arr.forEach((a, ak) => {
         if(a instanceof Array) {
-            arr[ak] = nomrArray(arr[ak], min, max);
+            arr[ak] = normArray(arr[ak], min, max);
         } else {
             arr[ak] = norm(arr[ak], min, max);
         }
@@ -31,6 +31,5 @@ function nomrArray(arr, min, max) {
 
 function normRecurArray(arrs) {
     const minMax = minMaxArr(arrs);
-    arrs = nomrArray(arrs, minMax.min, minMax.max);
-    return arrs;
+    return normArray(arrs, minMax.min, minMax.max);
 }

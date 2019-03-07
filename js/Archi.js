@@ -47,14 +47,18 @@
         run(inputs, outputs) {
             if (inputs.length !== outputs.length)
                 throw 'inputs and outputs count must match';
-            const normalized = normRecurArray([
+            const minMax = minMaxArr([
                 inputs,
                 outputs
             ]);
+            const normalized = normArray([
+                inputs,
+                outputs
+            ], minMax.min, minMax.max);
             normalized[0].forEach((input, ik) => {
                 let gen = new Gen(this.layers);
                 gen.mutate();
-                gen.train(input, normalized[1][ik]);
+                gen.train(input, normalized[1][ik], minMax);
             });
             return this;
         }
