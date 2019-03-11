@@ -1,47 +1,39 @@
 (function () {
     class Gen extends Observer {
-        constructor(layers, batchSize, settings) {
+        constructor(archi, layers, batchSize, settings) {
             super();
             if (!settings) settings = {};
+            this.archi = archi || 1;
             this.batchSize = batchSize || 1;
-            this.entities = [];
             this.layers = layers;
             this.inputs = settings.inputs || [];
             this.outputs = settings.outputs || [];
             this.layers = layers;
-            for(let i = 0; i < this.batchSize; i++) {
-                let layersClones = [];
-                this.layers.forEach((layer) => {
-                    layersClones.push(Object.assign(Object.create(Object.getPrototypeOf(layer)), layer));
-                });
-                this.entities.push(layersClones);
-            }
-            this.batch = new Batch(this.entities, this.inputs, this.outputs);
+
+            this.prevBatch = null;
+            this.batch = new Batch(
+                this.layers,
+                this.batchSize,
+                this.inputs,
+                this.outputs
+            );
             this.score = 0;
         }
 
-        train() {
-            batch.train();
+        display() {
+            this.batch.display();
         }
 
-        calcScore(modelOutput, output, minMax) {
-            if(!(modelOutput instanceof Array)) {
-                modelOutput = [modelOutput];
-            }
-            output = normArray(output, minMax.min, minMax.max);
-            let diff = 0;
-            output.forEach((o, i) => {
-                const mo = modelOutput[i];
-                diff += Math.abs(mo - o);
-            });
-            diff /= output.length;
-            return diff;
+        train(mutation) {
+            this.propagate("train start");
+            this.batch.train(mutation);
+            const b = this.batch.getBest(this.batch);
+            this.propagate("train end", b);
         }
 
         mutate() {
-            this.entities.forEach((entity) => {
-
-            });
+            this.prevBatch = Object.assign(Object.create(Object.getPrototypeOf(this.batch)), this.batch);
+            this.batch.mutate(this.prevBatch);
         }
     }
 

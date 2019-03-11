@@ -19,6 +19,29 @@
             return (this.value >= this.threshold) ? this.value : 0;
         }
 
+        set_threshold(v) {
+            this.threshold = v;
+            if(this.threshold > 1) this.threshold = 1;
+            else if (this.threshold < 0) this.threshold = 0;
+        }
+
+        mutate(force) {
+            this.set_threshold(this.threshold + (Math.random() * force * 2) - (force));
+            if(this.inSyns && this.inSyns.length) {
+                this.inSyns.forEach((syn) => {
+                    syn.mutate(force);
+                });
+            }
+        }
+
+        display(li, ni) {
+            Archi.setColor(jQuery('.archi [data-trigger=l_'+li+'] [data-trigger=n_'+ni+']'), this.getValue());
+            if(this.inSyns && this.inSyns.length) {
+                this.inSyns.forEach((syn) => {
+                });
+            }
+        }
+
         activate() {
             this.propagate("activate");
 

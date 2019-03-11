@@ -33,3 +33,12 @@ function normRecurArray(arrs) {
     const minMax = minMaxArr(arrs);
     return normArray(arrs, minMax.min, minMax.max);
 }
+
+
+Array.prototype.sum = function() {
+    let s = 0;
+    for(var n = 0; n < this.length; n++) {
+        s += this[n];
+    }
+    return s / this.length;
+};

@@ -13,6 +13,15 @@
             this.value = settings.value || 0.5;
         }
 
+        mutate(force) {
+            this.force += ((Math.random() * force * 2) - (force));
+            if(this.force > 1) {
+                this.force = 1;
+            } else if(this.force < 0) {
+                this.force = 0;
+            }
+        }
+
         activate() {
             this.propagate("activate");
             if(this.from.on()) {

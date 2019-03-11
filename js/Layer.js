@@ -4,16 +4,20 @@
             super();
             if (!settings) settings = {};
             this.neurs = [];
+            this.index = 0;
             this.nextLayer = settings.nextLayer || false;
             this.prevLayer = settings.prevLayer || false;
             this.input = settings.input || false;
             this.output = settings.output || false;
+            this.processedOutput = false;
+            this.score = Infinity;
             if(this.output && this.input) {
                 throw 'Layer cannot be input and output';
             }
             this.neursCount = neursCount;
             this.init();
         }
+
 
         init() {
             for(let i = 0; i < this.neursCount; i++) {
@@ -27,14 +31,45 @@
             return this;
         }
 
-        getOutput() {
-            let output = [];
+        calcOutput() {
+            this.processedOutput = [];
             if(this.output) {
                 this.neurs.forEach((neur) => {
-                    output.push(neur.getValue());
+                    const val = neur.getValue();
+                    this.processedOutput.push(val);
                 });
             }
-            return output;
+            return this.processedOutput;
+        }
+
+        calcScore(output) {
+            if (!(this.processedOutput instanceof Array)) {
+                this.processedOutput = [this.processedOutput];
+            }
+
+            if (!(output instanceof Array)) {
+                output = [output];
+            }
+
+
+            // console.log("diff", output, this.processedOutput);
+
+            let diff = 0;
+            this.processedOutput.forEach((o, i) => {
+                const oo = output[i];
+                diff += Math.abs(oo - o);
+            });
+            diff /= this.processedOutput.length;
+            this.score = diff;
+            return diff;
+        }
+
+        display() {
+            let ni = 0;
+            this.neurs.forEach(neur => {
+                neur.display(this.index, ni);
+                ni++;
+            });
         }
 
         setValues(inputs) {
@@ -47,10 +82,13 @@
             return this;
         }
 
-        activate() {
+        activate(mutation) {
             this.propagate("activate");
+            let ni = 0;
             this.neurs.forEach(neur => {
+                neur.mutate(mutation);
                 neur.activate();
+                ni++;
             });
             this.propagate("activated");
             return this;
