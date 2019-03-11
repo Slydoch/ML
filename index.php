@@ -10,6 +10,7 @@
     <script src="/js/helper.js?t=<?= time() ?>" type="text/javascript"></script>
     <script src="/js/Layer.js?t=<?= time() ?>" type="text/javascript"></script>
     <script src="/js/Archi.js?t=<?= time() ?>" type="text/javascript"></script>
+    <script src="/js/Batch.js?t=<?= time() ?>" type="text/javascript"></script>
     <script src="/js/Neur.js?t=<?= time() ?>" type="text/javascript"></script>
     <script src="/js/Gen.js?t=<?= time() ?>" type="text/javascript"></script>
     <script src="/js/Syn.js?t=<?= time() ?>" type="text/javascript"></script>

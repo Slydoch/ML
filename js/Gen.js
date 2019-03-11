@@ -1,31 +1,27 @@
 (function () {
     class Gen extends Observer {
-        constructor(layers, settings) {
+        constructor(layers, batchSize, settings) {
             super();
             if (!settings) settings = {};
+            this.batchSize = batchSize || 1;
+            this.entities = [];
             this.layers = layers;
+            this.inputs = settings.inputs || [];
+            this.outputs = settings.outputs || [];
+            this.layers = layers;
+            for(let i = 0; i < this.batchSize; i++) {
+                let layersClones = [];
+                this.layers.forEach((layer) => {
+                    layersClones.push(Object.assign(Object.create(Object.getPrototypeOf(layer)), layer));
+                });
+                this.entities.push(layersClones);
+            }
+            this.batch = new Batch(this.entities, this.inputs, this.outputs);
             this.score = 0;
         }
 
-        train(input, output, minMax) {
-            if (!(input instanceof Array))
-                input = [input];
-            if (!(output instanceof Array))
-                output = [output];
-
-            let processOutput = [];
-            this.layers.forEach((layer, i) => {
-                i = parseInt(i);
-                if(0 === i) {
-                    layer.setValues(input);
-                }
-                layer.activate();
-                if(this.layers.length - 1 === i) {
-                    processOutput = layer.getOutput(input);
-                }
-            });
-            this.calcScore(output, processOutput, minMax);
-            console.log(this.score);
+        train() {
+            batch.train();
         }
 
         calcScore(modelOutput, output, minMax) {
@@ -39,11 +35,13 @@
                 diff += Math.abs(mo - o);
             });
             diff /= output.length;
-            this.score = diff;
-            return this.score;
+            return diff;
         }
 
         mutate() {
+            this.entities.forEach((entity) => {
+
+            });
         }
     }
 

@@ -3,12 +3,12 @@
         constructor(settings) {
             super();
             if (!settings) settings = {};
-            this.threshold = settings.threshold || 0.5 + (Math.random() / 0.1 - Math.random() / 0.2);
+            this.threshold = settings.threshold || 0.5;
             this.outSyns = [];
             this.inSyns = [];
             this.input = false;
             this.output = false;
-            this.value = settings.value || 0.5 + (Math.random() / 0.1 - Math.random() / 0.2);
+            this.value = settings.value || 0.5;
         }
 
         on() {
